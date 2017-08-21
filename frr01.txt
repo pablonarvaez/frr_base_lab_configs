@@ -1,0 +1,53 @@
+frr01# show running-config
+Building configuration...
+
+Current configuration:
+!
+frr version 3.1-dev-MyOwnFRRVersion
+frr defaults traditional
+no log monitor
+hostname frr01
+username root nopassword
+!
+service integrated-vtysh-config
+!
+log syslog informational
+!
+interface ens3
+ description Interface specific description
+!
+interface ens4
+ description link_to_spine01-eth4
+ ip address 172.16.0.25/30
+!
+interface ens5
+ description link_to_spine02-eth4
+ ip address 172.16.0.29/30
+!
+interface ens10
+ description link_to_frr02-ens10
+ ip address 172.16.254.5/30
+!
+interface lo
+ description router-id
+ ip address 10.0.1.1/32
+!
+router bgp 65000
+ bgp router-id 10.0.1.1
+ neighbor ebgp-to-spine-peers peer-group
+ neighbor ebgp-to-spine-peers remote-as 65020
+ neighbor 172.16.0.26 peer-group ebgp-to-spine-peers
+ neighbor 172.16.0.30 peer-group ebgp-to-spine-peers
+ neighbor 172.16.254.6 remote-as 65000
+ !
+ address-family ipv4 unicast
+  network 10.0.1.1/32
+ exit-address-family
+ vnc defaults
+  response-lifetime 3600
+  exit-vnc
+!
+line vty
+!
+end
+frr01#
